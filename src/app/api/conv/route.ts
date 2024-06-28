@@ -1,4 +1,5 @@
-import { writeComponentFile } from "@/practice/fileGenerator";
+
+import { ABCOM } from "@/practice/genOneV1";
 import { NextResponse } from "next/server";
 /*
     - we will have info inside an array of object
@@ -8,7 +9,7 @@ import { NextResponse } from "next/server";
 */
 
 export const GET = async(req:Request) =>{
-    const result = await writeComponentFile("abc")
+    const result = ABCOM()
 
     return new NextResponse(JSON.stringify({ok:123}),{status:200})
 }

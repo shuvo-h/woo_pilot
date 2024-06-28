@@ -1,5 +1,4 @@
 
-// this is a goog structure
 const components = [
   {
     ComponentAndFileName: "NavBar",
