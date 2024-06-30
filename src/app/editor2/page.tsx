@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from 'react';
 
 // Simulating dynamic import from @/practice/genOneV1
@@ -7,7 +7,7 @@ const componentsRaw = [
         ComponentAndFileName: "Accordion",
         tag: "div",
         className: "accordion-section text-xl bg-yellow-300",
-        type:"accordian",
+        type: "accordion",
         children: [
             {
                 tag: "div",
@@ -21,9 +21,9 @@ const componentsRaw = [
                     },
                     {
                         tag: "div",
-                        className: "accordion-content hidden",
+                        className: "accordion-content ",
                         children: ["Content for the first accordion item."],
-                        clsHiden: "hidden",
+                        clsHidden: "hidden",
                         clsBlock: "block",
                     },
                 ],
@@ -40,60 +40,112 @@ const componentsRaw = [
                     },
                     {
                         tag: "div",
-                        className: "accordion-content hidden",
+                        className: "accordion-content ",
                         children: ["Content for the second accordion item."],
-                        clsHiden: "hidden",
+                        clsHidden: "hidden",
                         clsBlock: "block",
                     },
                 ],
             },
         ],
     },
+    // You can add more components with different types
+    {
+        ComponentAndFileName: "SimpleDiv",
+        tag: "div",
+        className: "simple-div bg-blue-300 p-4",
+        type: "simple",
+        children: [
+            {
+                tag: "p",
+                className: "simple-text",
+                children: ["This is a simple component."],
+            },
+        ],
+    },
 ];
 
-const renderElement = (element, openIndex, setOpenIndex, parentIndex = '') => {
-  const { tag, className, children, clsHiden, clsBlock, isFn } = element;
-  const Tag = tag || 'div'; // Default to 'div' if no tag is specified
+// Accordion Renderer
+const AccordionRenderer = ({ element }) => {
+    const [activeIndex, setActiveIndex] = useState(-1); // State to keep track of which accordion item is open
 
-  // Generate a unique key for each element
-  const currentKey = `${parentIndex}-${element.key || 0}`;
+    const handleClick = (index) => {
+        console.log(index);
 
-  // Handle click event for headers
-  const handleClick = () => {
-    if (isFn) {
-      setOpenIndex(openIndex === currentKey ? null : currentKey);
+        setActiveIndex( index);
+    };
+
+    return (
+        <div className={element.className}>
+            {element.children.map((child, index) => (
+                <div key={index} className="accordion-item">
+                    {child.children.map((childElement, childIndex) => {
+                        if (childElement.tag === "h3") {
+                            return (
+                                <h3
+                                    key={childIndex}
+                                    className={childElement.className}
+                                    onClick={() => handleClick(index)}
+                                >
+                                    {childElement.children}
+                                </h3>
+                            );
+                        } else {
+                            return (
+                                <div
+                                    key={childIndex}
+                                    className={`${childElement.className} ${
+                                        activeIndex === index ? childElement.clsBlock : childElement.clsHidden
+                                    } block`}
+                                >
+                                    {childElement.children}
+                                </div>
+                            );
+                        }
+                    })}
+                </div>
+            ))}
+        </div>
+    );
+};
+
+// Simple Component Renderer
+const SimpleRenderer = ({ element }) => {
+    return (
+        <div className={element.className}>
+            {element.children.map((child, index) => (
+                <div key={index} className={child.className}>
+                    {child.children}
+                </div>
+            ))}
+        </div>
+    );
+};
+
+// Main Render Function
+const renderComponent = (element) => {
+    switch (element.type) {
+        case "accordion":
+            return <AccordionRenderer key={element.ComponentAndFileName} element={element} />;
+        case "simple":
+            return <SimpleRenderer key={element.ComponentAndFileName} element={element} />;
+        // Add more cases for different types
+        default:
+            return null;
     }
-  };
-
-  return (
-    <Tag
-      className={className}
-      key={currentKey}
-      onClick={isFn ? handleClick : undefined} // Only attach click handler if it's a clickable element
-      style={clsHiden ? { display: openIndex === currentKey ? clsBlock : clsHiden } : {}}
-    >
-      {children && children.map((child, index) => (
-        typeof child === 'string'
-          ? child // Render string directly
-          : renderElement({ ...child, key: index }, openIndex, setOpenIndex, currentKey) // Recursively render child elements
-      ))}
-    </Tag>
-  );
 };
 
 const Editor = () => {
-  const [openIndex, setOpenIndex] = useState(null); // Use null to represent no open item initially
-
-  const allList = componentsRaw.map((el, index) => renderElement({ ...el, key: index }, openIndex, setOpenIndex));
-
-  return (
-    <div>
-      <h2 className='bg-pink-500'>My Editor</h2>
-      <div>
-        {allList}
-      </div>
-    </div>
-  );
+    return (
+        <div>
+            <h2 className='bg-pink-500'>My Editor</h2>
+            <div>
+                {componentsRaw.map((component, index) => (
+                    renderComponent(component)
+                ))}
+            </div>
+        </div>
+    );
 };
 
 export default Editor;
