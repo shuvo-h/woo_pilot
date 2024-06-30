@@ -110,7 +110,7 @@ export default Page;
 
 
 // Example usage
-const components = [
+export const components = [
     {
         ComponentAndFileName: "NavBar",
         tag: "nav",
@@ -160,11 +160,11 @@ const components = [
     {
         ComponentAndFileName: "HeroSection",
         tag: "section",
-        className: "bg-blue-500 text-white py-12 px-4",
+        className: "bg-gray-800 text-white my-4 py-12 px-4",
         children: [
             {
                 tag: "h1",
-                className: "text-4xl font-bold",
+                className: "text-4xl font-bold bg-pink-700",
                 children: ["Welcome to Our Website"],
             },
             {
@@ -177,7 +177,7 @@ const components = [
     {
         ComponentAndFileName: "Footer",
         tag: "footer",
-        className: "bg-gray-900 text-white p-4",
+        className: "bg-pink-900 text-white p-4",
         children: [
             {
                 tag: "div",
